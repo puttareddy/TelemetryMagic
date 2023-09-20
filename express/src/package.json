@@ -1,0 +1,61 @@
+{
+  "name": "express-example",
+  "private": true,
+  "version": "0.23.0",
+  "description": "Example of Express integration with OpenTelemetry",
+  "main": "index.js",
+  "scripts": {
+    "zipkin:server": "cross-env EXPORTER=zipkin node ./server.js",
+    "zipkin:client": "cross-env EXPORTER=zipkin node ./client.js",
+    "jaeger:server": "cross-env EXPORTER=jaeger node ./server.js",
+    "jaeger:client": "cross-env EXPORTER=jaeger node ./client.js",
+    "docker:start": "cd ../.. && docker-compose down && docker-compose --env-file ./config/.env.dev up express-server",
+    "docker:startd": "cd ../.. && docker-compose down && docker-compose --env-file ./config/.env.dev up express-server -d",
+    "docker:stop": "cd ../.. && docker-compose --env-file ./config/.env.dev down",
+    "start": "cross-env EXPORTER=zipkin node ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/open-telemetry/opentelemetry-js.git"
+  },
+  "keywords": [
+    "opentelemetry",
+    "express",
+    "tracing"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "author": "OpenTelemetry Authors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/open-telemetry/opentelemetry-js/issues"
+  },
+  "dependencies": {
+    "@dynatrace/opentelemetry-exporter-metrics": "^0.3.0",
+    "@google-cloud/opentelemetry-cloud-trace-exporter": "^1.1.0",
+    "@opentelemetry/api": "^1.1.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.27.2",
+    "@opentelemetry/core": "^1.0.1",
+    "@opentelemetry/exporter-collector-proto": "^0.25.0",
+    "@opentelemetry/exporter-jaeger": "^0.25.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.27.0",
+    "@opentelemetry/exporter-zipkin": "^0.25.0",
+    "@opentelemetry/instrumentation": "^0.25.0",
+    "@opentelemetry/instrumentation-express": "^0.23.0",
+    "@opentelemetry/instrumentation-http": "^0.25.0",
+    "@opentelemetry/metrics": "^0.24.0",
+    "@opentelemetry/resources": "^0.25.0",
+    "@opentelemetry/sdk-node": "^0.27.0",
+    "@opentelemetry/sdk-trace-base": "^0.25.0",
+    "@opentelemetry/sdk-trace-node": "^0.25.0",
+    "@opentelemetry/semantic-conventions": "^0.25.0",
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "install": "^0.13.0",
+    "npm": "^8.4.0"
+  },
+  "homepage": "https://github.com/open-telemetry/opentelemetry-js#readme"
+}

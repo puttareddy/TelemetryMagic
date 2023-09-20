@@ -1,0 +1,133 @@
+version: "2"
+services:
+  # Collector
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.43.0
+    command: ["--config=/conf/collector-config.yaml"]
+    volumes:
+      - ./opentelemetry/collector-config.yaml:/conf/collector-config.yaml
+    ports:
+      - "55678:55678"
+      - "9464:9464"
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - zipkin-all-in-one
+
+  # Zipkin
+  zipkin-all-in-one:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+
+  react-app: #docker run --rm -it -v ${PWD}:/work -w /work -p 5002:5000 poc/accounts:1.0.0 /bin/sh 
+    container_name: react-app
+    image: observability/react-app:1.0.0
+    build:
+      context: ./react
+      # target: debug
+    #working_dir: /work      #comment out for build.target:prod
+    #entrypoint: /bin/sh     #comment out for build.target:prod
+    #stdin_open: true        #comment out for build.target:prod
+    #tty: true               #comment out for build.target:prod
+    # volumes:
+    # - ./graphql/src/:/work/src/
+    volumes:
+    - ./keys.json:/usr/share/keys.json
+    ports:
+      - 3000:3000
+    environment:
+      - COLLECTOR_HOST=${COLLECTOR_HOST}
+      - DYNATRACE_URL=${DYNATRACE_URL}
+      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
+      - GOOGLE_APPLICATION_CREDENTIALS=/usr/share/keys.json
+    depends_on:
+      - "express-server"
+
+  fastify-server: #docker run --rm -it -v ${PWD}:/work -w /work -p 5002:5000 poc/accounts:1.0.0 /bin/sh 
+    container_name: fastify-server
+    image: observability/fastify-server:1.0.0
+    build:
+      context: ./fastify
+      target: debug
+    #working_dir: /work      #comment out for build.target:prod
+    #entrypoint: /bin/sh     #comment out for build.target:prod
+    #stdin_open: true        #comment out for build.target:prod
+    #tty: true               #comment out for build.target:prod
+    volumes:
+    - ./fastify/src/:/work/src/
+    - ./keys.json:/work/src/keys.json
+    ports:
+      - 3030:3030
+    environment:
+      - COLLECTOR_HOST=${COLLECTOR_HOST}
+      - DYNATRACE_URL=${DYNATRACE_URL}
+      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
+      - GQL_SERVER_HOST=${GQL_SERVER_HOST}
+      - GOOGLE_APPLICATION_CREDENTIALS=/work/src/keys.json
+      - PORT=3030
+    depends_on:
+      - "express-server"
+
+  express-server: #docker run --rm -it -v ${PWD}:/work -w /work -p 5002:5000 poc/accounts:1.0.0 /bin/sh 
+    container_name: express-server
+    image: observability/express-server:1.0.0
+    build:
+      context: ./express
+      target: debug
+    #working_dir: /work      #comment out for build.target:prod
+    #entrypoint: /bin/sh     #comment out for build.target:prod
+    #stdin_open: true        #comment out for build.target:prod
+    #tty: true               #comment out for build.target:prod
+    volumes:
+    - ./express/src/:/work/src/
+    - ./keys.json:/work/src/keys.json
+    ports:
+      - 8081:8081
+      - 9229:9229            #debug port
+    environment:
+      - COLLECTOR_HOST=${COLLECTOR_HOST}
+      - DYNATRACE_URL=${DYNATRACE_URL}
+      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
+      - GQL_SERVER_HOST=${GQL_SERVER_HOST}
+      - SPRING_BOOT_HOST=${SPRING_BOOT_HOST}
+      - GOOGLE_APPLICATION_CREDENTIALS=/work/src/keys.json
+    depends_on:
+      - "graphql-server"
+      - "spring-boot"
+
+  graphql-server: #docker run --rm -it -v ${PWD}:/work -w /work -p 5002:5000 poc/accounts:1.0.0 /bin/sh 
+    container_name: graphql-server
+    image: observability/graphql-server:1.0.0
+    build:
+      context: ./graphql
+      target: debug
+    #working_dir: /work      #comment out for build.target:prod
+    #entrypoint: /bin/sh     #comment out for build.target:prod
+    #stdin_open: true        #comment out for build.target:prod
+    #tty: true               #comment out for build.target:prod
+    volumes:
+    - ./graphql/src/:/work/src/
+    - ./keys.json:/work/src/keys.json
+    ports:
+      - 4000:4000
+    #  - 9229:9229            #debug port
+    environment:
+      - COLLECTOR_HOST=${COLLECTOR_HOST}
+      - DYNATRACE_URL=${DYNATRACE_URL}
+      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
+      - GOOGLE_APPLICATION_CREDENTIALS=/work/src/keys.json
+    depends_on:
+      - "collector"
+
+  spring-boot:
+    image: observability/spring-boot:1.0.0
+    build:
+      context: ./spring-boot
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./spring-boot/config/application.yml:/config/application.yml"
+    depends_on:
+      - "collector"
+  

@@ -1,0 +1,56 @@
+{
+  "name": "express-example",
+  "private": true,
+  "version": "0.23.0",
+  "description": "Example of Express integration with OpenTelemetry",
+  "main": "index.js",
+  "scripts": {
+    "zipkin:server": "cross-env EXPORTER=zipkin node ./server.js",
+    "start": "cross-env EXPORTER=zipkin node ./server.js",
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/open-telemetry/opentelemetry-js.git"
+  },
+  "keywords": [
+    "opentelemetry",
+    "express",
+    "tracing"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "author": "OpenTelemetry Authors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/open-telemetry/opentelemetry-js/issues"
+  },
+  "dependencies": {
+    "@autotelic/fastify-opentelemetry": "^0.16.0",
+    "@google-cloud/opentelemetry-cloud-trace-exporter": "^1.1.0",
+    "@opentelemetry/api": "^1.1.0",
+    "@opentelemetry/core": "^1.2.0",
+    "@opentelemetry/exporter-collector-proto": "^0.25.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.28.0",
+    "@opentelemetry/instrumentation": "^0.22.0",
+    "@opentelemetry/instrumentation-http": "^0.22.0",
+    "@opentelemetry/node": "^0.22.0",
+    "@opentelemetry/resources": "^1.2.0",
+    "@opentelemetry/semantic-conventions": "^1.2.0",
+    "@opentelemetry/tracing": "^0.22.0",
+    "@types/node": "^14.14.36",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
+    "eslint": "^7.13.0",
+    "eslint-config-standard": "^16.0.2",
+    "fastify": "^3.8.0",
+    "lint-staged": "^10.5.2",
+    "node-fetch": "^2.6.1",
+    "sinon": "^9.2.1",
+    "standard": "^16.0.3",
+    "tap": "^14.11.0",
+    "tsd": "^0.14.0"
+  },
+  "homepage": "https://github.com/open-telemetry/opentelemetry-js#readme"
+}

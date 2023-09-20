@@ -1,0 +1,40 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+        # cors_allowed_origins:
+        #   - http://*
+        #   - https://*
+
+exporters:
+  zipkin:
+    endpoint: "http://zipkin-all-in-one:9411/api/v2/spans"
+  prometheus:
+    endpoint: "0.0.0.0:9464"
+  dynatrace:
+    # optional - Dimensions specified here will be included as a dimension on every exported metric
+    #            unless that metric already has a dimension with the same key.
+    default_dimensions:
+      example_dimension: example value
+
+    # optional - prefix will be prepended to each metric name in prefix.name format
+    prefix: putt-observability
+
+    endpoint: https://eub584.dynatrace-managed.com/e/5330b34c-6dd5-466a-8aa7-e75e9e5535e0/api/v2/metrics/ingest
+    # Token must at least have the Ingest metrics (metrics.ingest) permission
+    api_token: *********
+
+processors:
+  batch:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [zipkin]
+      processors: [batch]
+    metrics:
+      receivers: [otlp]
+      exporters: [dynatrace, prometheus]
+      processors: [batch]

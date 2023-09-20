@@ -1,0 +1,34 @@
+{
+  "name": "exporter-demo",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Dynatrace Exporter demo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./sample.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/open-telemetry/opentelemetry-metric-js.git"
+  },
+  "keywords": [
+    "opentelemetry",
+    "express",
+    "tracing"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "author": "OpenTelemetry Authors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/open-telemetry/opentelemetry-metric-js/issues"
+  },
+  "dependencies": {
+    "@dynatrace/opentelemetry-exporter-metrics": "^0.3.0",
+    "@opentelemetry/api": "^1.0.4",
+    "@opentelemetry/metrics": "^0.24.0"
+  },
+  "homepage": "https://github.com/open-telemetry/opentelemetry-metric-js#readme",
+  "devDependencies": {}
+}
